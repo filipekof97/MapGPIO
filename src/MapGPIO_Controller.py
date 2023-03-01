@@ -42,7 +42,8 @@ def gravar_COM( map_GPIO_COM, nome_arquivo ):
 
     try:
         with open(nome_arquivo, 'w') as json_file:
-            json.dump(dicionario_JSON, json_file, indent=4)        
+            json.dump(dicionario_JSON, json_file, indent=4)    
+            json_file.close()             
         return True
     except:
         return False
@@ -57,6 +58,7 @@ def carregar_COM( nome_arquivo ):
     try:
         with open( nome_arquivo, 'r') as openfile:      
             json_object = json.load(openfile) 
+            openfile.close()
     except:
         return False
 
@@ -74,6 +76,18 @@ def carregar_COM( nome_arquivo ):
     COMs.append(COM)
 
     return True    
+
+#***********************************************************#
+def retornar_nome_arquivo_livre():
+
+    numero = 1
+
+    while True:        
+        nome_arquivo = 'COM' + str(numero).zfill(3) + '.json'
+        if not (os.path.isfile(nome_arquivo)):
+            return nome_arquivo
+
+        numero += 1
 
 #***********************************************************#
 def inicializar_componentes_salvos():
@@ -187,46 +201,31 @@ def carregar_status_todos_componentes():
 
     for porta in range(4):
         todos_componentes_I2C[porta]['valor'   ] = todos_componentes_I2C[porta]['conversor'].value
-        todos_componentes_I2C[porta]['corrente'] = todos_componentes_I2C[porta]['conversor'].voltage        
-
-    
+        todos_componentes_I2C[porta]['corrente'] = todos_componentes_I2C[porta]['conversor'].voltage     
 
 #***********************************************************#
-def finalizar_gpio():
-    gpio.cleanup()
-           
+def limpar_gpio():
+    gpio.cleanup()              
 
 #***********************************************************#
 def Teste():
 
-    #model1 = MapGPIO_Model()    
-    #model1.set_botao(16)   
-    #model1.set_joystick({'up':20, 'down':9, 'left':10, 'right':11})  
-    #model1.set_analogico(0)    
-    #COMs.append(model1)   
 
-    if not carregar_COM( 'teste.json' ):
-        print('erro')
-        return
+    contador = 1
 
-    inicializar_componentes_salvos()
+    while contador < 10:
+        model1 = MapGPIO_Model()    
+        model1.set_botao(16)   
+        model1.set_joystick({'up':20, 'down':9, 'left':10, 'right':11})  
+        model1.set_analogico(0)    
+        print("Criar arquivo: " + retornar_nome_arquivo_livre())
+        if not gravar_COM( model1, retornar_nome_arquivo_livre() ):
+            break
+        time.sleep(1)
+        contador += 1
 
-    while True:
-        carregar_status_componentes_salvos()
-        print(COMs[0].get_lista_botoes())  
-        print(COMs[0].get_lista_joysticks())  
-        print(COMs[0].get_lista_analogicos())        
+    
 
-        time.sleep(0.08)
+    limpar_gpio()
 
-    #print(COMs[0].get_lista_botoes())
-    #print(COMs[0].get_lista_joysticks())
-    #print(COMs[0].get_lista_analogicos())
-    #print(gravar_COM( model1, 'teste.json' ))
-    #print(carregar_COM( 'teste.json' ))
-    #print(COMs[1].get_lista_botoes())
-    #print(COMs[1].get_lista_joysticks())
-    #print(COMs[1].get_lista_analogicos())
-
-    finalizar_gpio()
-
+ 
