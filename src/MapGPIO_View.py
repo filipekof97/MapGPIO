@@ -173,7 +173,7 @@ def controle_selecao_lista_itens(listbox, lista_button):
 def botao_adicionar_item(listbox, combobox, console_logs, controller_map_gpio, janela, button_adicionar):     
 
     button_adicionar.state(['disabled'])
-    escrever_console_log(console_logs, 'Iniciliazndo leitura das GPIOs...')    
+    escrever_console_log(console_logs, 'Inicializando leitura das GPIOs...')    
 
     porta_gpio_log = ''
 
@@ -224,10 +224,10 @@ def botao_adicionar_item(listbox, combobox, console_logs, controller_map_gpio, j
         
         porta_gpio_log = ' [GPIO:' + porta_gpio_log[0:len(porta_gpio_log)-1] + ']'
 
-        controller_map_gpio.COMs[0].set_joystick({'up':    direcoes['CIMA'],
-                                                  'down':  direcoes['BAIXO'], 
+        controller_map_gpio.COMs[0].set_joystick({'up':    direcoes['CIMA'    ],
+                                                  'down':  direcoes['BAIXO'   ], 
                                                   'left':  direcoes['ESQUERDA'], 
-                                                  'right': direcoes['DIREITA']})   
+                                                  'right': direcoes['DIREITA' ]})   
 
     else: # potenciometro
         escrever_console_log(console_logs, 'Mova o potenciometro para o final...')
@@ -351,13 +351,13 @@ def executa_botao_delete(listbox, lista_botoes):
 
         componente = listbox.get( listbox.curselection()[0] ) 
 
-        if askquestion("Atenção", "Apagar o mapeamento " + componente + '?', icon ='warning') == 'no':
+        if askquestion("Atenção", 'Deseja deletar o mapeamento selecionado?', icon ='warning') == 'no':
             return
         
         try:
             os.remove(componente + '.json')
         except:
-            showerror('Erro', 'Não foi possivel delepar mapeamento, tente mais tarde!' )
+            showerror('Erro', 'Não foi possivel deletar mapeamento, tente mais tarde!' )
             return
         
         listbox.delete(listbox.curselection()[0]) 
@@ -428,11 +428,13 @@ def janela_principal(janela_anterior):
     janela = inicializar_modulo_tkinter()    
 
     frame1 = ttk.Frame(janela, borderwidth=5, relief='groove' ) 
-    frame1.place(x=250, y=200, width=300, height=200 )
+    frame1.place(x=250, y=140, width=300, height=310 )
 
     ttk.Label(frame1, text="Mapeamentos de GPIO", font=( "Helvetica", 14 ), ).place(x=50, y=0, width=240, height=50 )
     ttk.Button(frame1, text="Novo", command=lambda: apertou_novo_editar(janela)).place(x=25, y=60, width=240, height=50 )
-    ttk.Button(frame1, text="Carregar", command=lambda: apertou_carregar(janela) ).place(x=25, y=120, width=240, height=50 )   
+    ttk.Button(frame1, text="Carregar", command=lambda: apertou_carregar(janela) ).place(x=25, y=120, width=240, height=50 )  
+    ttk.Button(frame1, text="Testar GPIOs", command=lambda: apertou_carregar(janela), state=tk.DISABLED ).place(x=25, y=180, width=240, height=50 ) 
+    ttk.Button(frame1, text="Sair", command=janela.destroy ).place(x=25, y=240, width=240, height=50 )
     
 
     janela.mainloop()

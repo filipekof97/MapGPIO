@@ -8,6 +8,7 @@ import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
+import logging
 
 class MapGPIO_Controller:   
 
@@ -16,6 +17,8 @@ class MapGPIO_Controller:
         self.COMs                   = []
         self.todos_componentes_gpio = {}
         self.todos_componentes_I2C  = {}
+
+        logging.basicConfig(filename = "MapGPIO.log", format='%(asctime)s:%(levelname)s:%(filename)s:%(message)s', level = logging.DEBUG)
 
     #***********************************************************#
     def retornar_lista_gpio(self): 
@@ -194,6 +197,7 @@ class MapGPIO_Controller:
                     status = False
             
                     if gpio.input(botao['gpio']) == gpio.LOW:
+                        logging.warning('INPUT DE BOTÃO EM GPIO:' + str(botao['gpio']).zfill(2))
                         status = True 
 
                     botao['status'] = status
@@ -205,13 +209,15 @@ class MapGPIO_Controller:
                         status = False
 
                         if gpio.input(joystick['gpio'][direcao]) == gpio.LOW:
+                            logging.warning('INPUT DE JOYSTICK EM GPIO:' + str(joystick['gpio'][direcao]).zfill(2) + ' NA DIREÇÃO:' + direcao )
                             status = True 
 
                         joystick['status'][direcao] = status
 
             # Portas Analogicas
             if len(COM.get_lista_analogicos()) > 0:
-                for analogico in COM.get_lista_analogicos():
+                for analogico in COM.get_lista_analogicos():      
+                    logging.warning('VALORES LIDOS DE POTENCIOMETRO NA PORTA:' + str(analogico['porta']).zfill(2) + ' Valor:' + str(analogico['conversor'].value) + ' Voltagem:' + str(analogico['conversor'].voltage) )              
                     analogico['status']['valor'   ] = analogico['conversor'].value
                     analogico['status']['corrente'] = analogico['conversor'].voltage
 
@@ -248,11 +254,13 @@ class MapGPIO_Controller:
             status = False
             
             if gpio.input(pino) == gpio.LOW:
+                logging.warning('GERAL: INPUT GERAL DE GPIO:' + str(pino).zfill(2) )
                 status = True 
 
             self.todos_componentes_gpio[pino] = status
 
         for porta in range(4):
+            logging.warning('GERAL: POTENCIOMETRO NA PORTA:' + str(porta).zfill(2) + ' Valor:' + str(self.todos_componentes_I2C[porta]['conversor'].value) + ' Voltagem:' + str(self.todos_componentes_I2C[porta]['conversor'].voltage ) )
             self.todos_componentes_I2C[porta]['valor'   ] = self.todos_componentes_I2C[porta]['conversor'].value
             self.todos_componentes_I2C[porta]['corrente'] = self.todos_componentes_I2C[porta]['conversor'].voltage     
 
@@ -348,29 +356,5 @@ class MapGPIO_Controller:
                 for posicao in range(len(COM.get_lista_analogicos())):                    
                     if COM.get_lista_analogicos()[posicao]['porta'] == porta:
                         COM.get_lista_analogicos().pop(posicao)
-                        return
-    
-        
+                        return         
 
-##***********************************************************#
-# def Teste():
-#
-#
-#    contador = 1
-#
-#    while contador < 10:
-#        model1 = MapGPIO_Model()    
-#        model1.set_botao(16)   
-#        model1.set_joystick({'up':20, 'down':9, 'left':10, 'right':11})  
-#        model1.set_analogico(0)    
-#        print("Criar arquivo: " + retornar_nome_arquivo_livre())
-#        if not gravar_COM( model1, retornar_nome_arquivo_livre() ):
-#            break
-#        time.sleep(1)
-#        contador += 1
-#
-#    
-#
-#    limpar_gpio()
-
- 
