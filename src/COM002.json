@@ -1,0 +1,14 @@
+{
+    "botoes": [
+        27
+    ],
+    "joysticks": [
+        {
+            "up": 17,
+            "down": 24,
+            "left": 23,
+            "right": 18
+        }
+    ],
+    "analogicos": []
+}
