@@ -32,14 +32,13 @@ BOLA_DIRECAO_X_DIREITA  = 1
 BOLA_DIRECAO_X_ESQUERDA = -1
 BOLA_DIRECAO_Y_CIMA     = -1
 BOLA_DIRECAO_Y_BAIXO    = 1
+lista_direcoes          = [-1,1]
 
 DIRECAO_RETANGULO_CIMA   = -1
 DIRECAO_RETANGULO_PARADO = 0
 DIRECAO_RETANGULO_BAIXO  = 1
 
 PONTUACAO_MAXIMA = 12
-
-lista_direcoes = [-1,1]
 
 
 #***********************************************************#
@@ -155,8 +154,9 @@ class Mapa():
       self.bola          = bola
 
    def desenhar_mapa(self):
-      self.escreve_pontuacao(self.jogador1.pontuacao, 100, 60 )
-      self.escreve_pontuacao(self.jogador2.pontuacao, LARGURA_MAX-100, 60 )
+      self.escreve_pontuacao(self.jogador1.pontuacao, LARGURA_MAX//2 - 100, 60 )
+      self.escreve_pontuacao(self.jogador2.pontuacao, LARGURA_MAX//2 + 100, 60 )
+
       pygame.draw.line(screen, BRANCO, (0, ALTURA_MAX - ESPESSURA_BARRA_INFERIOR//2 ), (LARGURA_MAX, ALTURA_MAX - ESPESSURA_BARRA_INFERIOR//2), ESPESSURA_BARRA_INFERIOR )
       pygame.draw.line(screen, BRANCO, (LARGURA_MAX//2, 0 ), (LARGURA_MAX//2, ALTURA_MAX), ESPESSURA_BARRA_CENTRAL)
 
